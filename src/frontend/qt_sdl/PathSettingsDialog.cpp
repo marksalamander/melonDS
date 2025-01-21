@@ -46,6 +46,7 @@ PathSettingsDialog::PathSettingsDialog(QWidget* parent) : QDialog(parent), ui(ne
     emuInstance = ((MainWindow*)parent)->getEmuInstance();
 
     auto& cfg = emuInstance->getLocalConfig();
+    ui->txtROMPath->setText(cfg.GetQString("ROMPath"));
     ui->txtSaveFilePath->setText(cfg.GetQString("SaveFilePath"));
     ui->txtSavestatePath->setText(cfg.GetQString("SavestatePath"));
     ui->txtCheatFilePath->setText(cfg.GetQString("CheatFilePath"));
@@ -109,6 +110,7 @@ void PathSettingsDialog::done(int r)
                 return;
 
             auto& cfg = emuInstance->getLocalConfig();
+            cfg.SetQString("ROMPath", ui->txtROMPath->text());
             cfg.SetQString("SaveFilePath", ui->txtSaveFilePath->text());
             cfg.SetQString("SavestatePath", ui->txtSavestatePath->text());
             cfg.SetQString("CheatFilePath", ui->txtCheatFilePath->text());
@@ -122,6 +124,23 @@ void PathSettingsDialog::done(int r)
     QDialog::done(r);
 
     closeDlg();
+}
+
+void PathSettingsDialog::on_btnROMBrowse_clicked()
+{
+    QString dir = QFileDialog::getExistingDirectory(this,
+        "Select ROM files path...",
+        emuDirectory);
+
+    if (dir.isEmpty()) return;
+
+    if (!QTemporaryFile(dir).open())
+    {
+        QMessageBox::critical(this, "melonDS", errordialog);
+        return;
+    }
+
+    ui->txtROMPath->setText(dir);
 }
 
 void PathSettingsDialog::on_btnSaveFileBrowse_clicked()

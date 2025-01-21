@@ -58,6 +58,7 @@ public:
 private slots:
     void done(int r);
 
+    void on_btnROMBrowse_clicked();
     void on_btnSaveFileBrowse_clicked();
     void on_btnSavestateBrowse_clicked();
     void on_btnCheatFileBrowse_clicked();
